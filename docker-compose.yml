@@ -1,0 +1,43 @@
+---
+services:
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/app
+      - backend_node_modules:/app/node_modules
+    ports:
+      - "3000:3000"
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    restart: always
+
+  edge:
+    image: bitnami/nginx:1.27.1
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./edge/nginx.conf:/opt/bitnami/nginx/conf/server_blocks/edge.conf:ro
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  backend_node_modules:
+    driver: local
+  frontend_node_modules:
+    driver: local
+

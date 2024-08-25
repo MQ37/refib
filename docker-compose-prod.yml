@@ -1,0 +1,35 @@
+---
+services:
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    image: refib-backend-prod
+    pull_policy: build
+    ports:
+      - "3000:3000"
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    image: refib-frontend-prod
+    pull_policy: build
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    restart: always
+
+  edge:
+    build:
+      context: ./edge
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8080'
+    depends_on:
+      - frontend
+      - backend
+
