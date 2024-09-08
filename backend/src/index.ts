@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from "express";
 
-const app: Express = express();
+export const app: Express = express();
 const port = process.env.PORT || 3000;
 
 // simple rec implementation
@@ -19,16 +19,16 @@ function fib(n: number): number {
  * by Project Nayuki, 2023. Public domain.
  * https://www.nayuki.io/page/fast-fibonacci-algorithms
  */
-function fastfib(n: number): [number, number] {
-	if (n === 0) {
-		return [0, 1];
+function fastfib(n: bigint): [bigint, bigint] {
+	if (n === 0n) {
+		return [0n, 1n];
     }
 
-    const [a, b] = fastfib(Math.floor(n / 2));
-    const c = a * (b * 2 - a);
+    const [a, b] = fastfib(n / 2n);
+    const c = a * (b * 2n - a);
     const d = a * a + b * b;
 
-    if (n % 2 === 0) {
+    if (n % 2n === 0n) {
         return [c, d];
     }
 
@@ -36,7 +36,7 @@ function fastfib(n: number): [number, number] {
 }
 
 // store already computed values
-const cache = new Map<number, number>();
+const cache = new Map<number, bigint>();
 app.get("/api/fib/:n", (req: Request, res: Response) => {
     const n = parseInt(req.params.n);
 
@@ -52,12 +52,18 @@ app.get("/api/fib/:n", (req: Request, res: Response) => {
         return res.send(cache.get(n)!.toString());
     }
     //const result = fib(n); // slow
-    const result = fastfib(n)[0]; // fast
+    const result = fastfib(BigInt(n))[0]; // fast
     cache.set(n, result);
     return res.send(result.toString());
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`running @ :${port}`);
 });
+
+// tests suite helper to close the server
+export const closeServer = () => {
+    console.log("stopping server");
+    server.close();
+}
 

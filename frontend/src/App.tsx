@@ -5,7 +5,7 @@ import { fetchFib } from './api';
 function App() {
 
     const [number, setNumber] = useState<number>(0);
-    const [result, setResult] = useState<number | null>(null);
+    const [result, setResult] = useState<bigint | null>(null);
 
     async function submit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -41,7 +41,11 @@ function App() {
                     <button>Submit</button>
                 </form>
 
-                <p>
+                <p style={{
+                    maxWidth: '50%',
+                    margin: '0 auto',
+                    wordWrap: 'break-word'
+                    }}>
                     {
                         result !== null ?
                         `Fib(${number}) = ${result}`

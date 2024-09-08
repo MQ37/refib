@@ -1,11 +1,10 @@
-export async function fetchFib(n: number): Promise<number> {
+export async function fetchFib(n: number): Promise<bigint> {
     const response = await fetch(`/api/fib/${n}`);
     if (!response.ok) {
         throw new Error(`Failed to fetch fib(${n})`);
     }
 
-    const data = await response.text();
-    const result = parseFloat(data);
-    return result;
+    const text = await response.text();
+    return BigInt(text);
 }
 
